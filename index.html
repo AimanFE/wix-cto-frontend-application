@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission Brief: Commando Frontend Engineer | Aiman Younis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(45deg, #1a1a2e, #16213e, #0f3460);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .mission-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .classified-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: fadeInDown 1s ease forwards;
+        }
+
+        .classified-stamp {
+            display: inline-block;
+            border: 3px solid #00ff88;
+            color: #00ff88;
+            padding: 0.5rem 2rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            letter-spacing: 3px;
+            transform: rotate(-5deg);
+            margin-bottom: 1rem;
+        }
+
+        .mission-title {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #00ff88, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 300;
+        }
+
+        .mission-brief {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 2rem 0;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            animation: slideInLeft 1s ease forwards;
+            animation-delay: 0.5s;
+        }
+
+        .brief-header {
+            color: #00ff88;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .mission-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: rgba(0, 204, 255, 0.1);
+            border: 1px solid #00ccff;
+            padding: 1.5rem;
+            border-radius: 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(0, 204, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 204, 255, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #00ccff;
+            display: block;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 0.5rem;
+        }
+
+        .commando-simulator {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin: 3rem 0;
+            opacity: 0;
+            animation: slideInRight 1s ease forwards;
+            animation-delay: 1s;
+        }
+
+        .simulator-title {
+            color: #00ff88;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .project-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .project-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid transparent;
+            padding: 1.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .project-card:hover, .project-card.selected {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+            transform: scale(1.05);
+        }
+
+        .project-urgency {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #ff4757;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .project-urgency.medium {
+            background: #ffa726;
+        }
+
+        .project-urgency.low {
+            background: #66bb6a;
+        }
+
+        .execute-btn {
+            background: linear-gradient(45deg, #00ff88, #00ccff);
+            color: #1a1a2e;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 1.5rem 0;
+            display: block;
+            width: 100%;
+        }
+
+        .execute-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 255, 136, 0.4);
+        }
+
+        .execution-output {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #00ff88;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            min-height: 120px;
+            color: #00ff88;
+            display: none;
+        }
+
+        .tech-arsenal {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin: 3rem 0;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+            animation-delay: 1.5s;
+        }
+
+        .arsenal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .tech-badge {
+            background: rgba(0, 204, 255, 0.2);
+            border: 1px solid #00ccff;
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .tech-badge:hover {
+            background: rgba(0, 204, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .contact-terminal {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00ff88;
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 3rem 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .terminal-line {
+            color: #00ff88;
+            margin: 0.5rem 0;
+        }
+
+        .terminal-command {
+            color: #00ccff;
+        }
+
+        .blinking-cursor {
+            animation: blink 1s infinite;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #00ff88, #00ccff);
+            width: 0%;
+            transition: width 2s ease;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00ff88;
+            animation: float 8s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-particles" id="particles"></div>
+
+    <div class="mission-container">
+        <div class="classified-header">
+            <div class="classified-stamp">MISSION BRIEF</div>
+            <h1 class="mission-title">COMMANDO FRONTEND</h1>
+            <p class="subtitle">Elite CTO Team Application • Agent: Aiman Younis</p>
+        </div>
+
+        <div class="mission-brief">
+            <h2 class="brief-header">🎯 MISSION OBJECTIVE</h2>
+            <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                Deploy as Frontend Commando to execute bleeding-edge strategic projects, create AI products, and provide maximum impact velocity for Wix management initiatives. Operate with precision, deliver quality solutions, and seamlessly transition between high-stakes projects.
+            </p>
+
+            <div class="mission-stats">
+                <div class="stat-card">
+                    <span class="stat-number">5+</span>
+                    <span class="stat-label">Years Frontend Combat</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">2M+</span>
+                    <span class="stat-label">Users Served</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">18</span>
+                    <span class="stat-label">Month Mission Led</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Mission Success Rate</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="commando-simulator">
+            <h2 class="simulator-title">⚡ COMMANDO MISSION SIMULATOR</h2>
+            <p style="color: rgba(255,255,255,0.8); margin-bottom: 1.5rem;">
+                Select a strategic project scenario to see how I'd execute as your Frontend Commando:
+            </p>
+
+            <div class="project-selector">
+                <div class="project-card" onclick="selectProject(this, 'ai-chat')">
+                    <div class="project-urgency">HIGH</div>
+                    <h3 style="color: #00ff88; margin-bottom: 0.5rem;">AI Chat Widget</h3>
+                    <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">CEO wants AI chat on all Wix sites. 2-week deadline.</p>
+                </div>
+                
+                <div class="project-card" onclick="selectProject(this, 'analytics')">
+                    <div class="project-urgency medium">MEDIUM</div>
+                    <h3 style="color: #00ff88; margin-bottom: 0.5rem;">Real-time Analytics</h3>
+                    <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">New analytics dashboard for enterprise clients.</p>
+                </div>
+                
+                <div class="project-card" onclick="selectProject(this, 'mobile')">
+                    <div class="project-urgency">HIGH</div>
+                    <h3 style="color: #00ff88; margin-bottom: 0.5rem;">Mobile Editor</h3>
+                    <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">Revolutionary mobile-first site editor.</p>
+                </div>
+                
+                <div class="project-card" onclick="selectProject(this, 'performance')">
+                    <div class="project-urgency low">LOW</div>
+                    <h3 style="color: #00ff88; margin-bottom: 0.5rem;">Performance Boost</h3>
+                    <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">Optimize loading times across platform.</p>
+                </div>
+            </div>
+
+            <button class="execute-btn" onclick="executeMission()" id="executeBtn" disabled>
+                SELECT MISSION TO EXECUTE
+            </button>
+
+            <div class="execution-output" id="output"></div>
+        </div>
+
+        <div class="tech-arsenal">
+            <h2 style="color: #00ccff; font-size: 1.8rem; margin-bottom: 1rem;">🛠️ TECHNICAL ARSENAL</h2>
+            <p style="color: rgba(255,255,255,0.8); margin-bottom: 1.5rem;">
+                Battle-tested tools from 5+ years in the frontend trenches:
+            </p>
+
+            <div class="arsenal-grid">
+                <div class="tech-badge">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">⚛️</div>
+                    <div>React</div>
+                </div>
+                <div class="tech-badge">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📦</div>
+                    <div>TypeScript</div>
+                </div>
+                <div class="tech-badge">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">⚡</div>
+                    <div>Vite</div>
+                </div>
+                <div class="tech-badge">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📱</div>
+                    <div>Redux</div>
+                </div>
+                <div class="tech-badge">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🎨</div>
+                    <div>CSS-in-JS</div>
+                </div>
+                <div class="tech-badge">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🔧</div>
+                    <div>Webpack</div>
+                </div>
+                <div class="tech-badge">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🧪</div>
+                    <div>Jest</div>
+                </div>
+                <div class="tech-badge">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🤖</div>
+                    <div>AI Tools</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-terminal">
+            <div class="terminal-line">$ cat agent_contact.txt</div>
+            <div class="terminal-line" style="overflow: hidden;">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+            <div class="terminal-line">AGENT: Aiman Younis</div>
+            <div class="terminal-line">STATUS: Ready for immediate deployment</div>
+            <div class="terminal-line">CONTACT: <span class="terminal-command">Aiman.Younis4@gmail.com</span></div>
+            <div class="terminal-line">MOBILE: <span class="terminal-command">+(972) 52-7979498</span></div>
+            <div class="terminal-line">GITHUB: <span class="terminal-command">github.com/AimanYounis</span></div>
+            <div class="terminal-line">MISSION: Join CTO Commando Team</div>
+            <div class="terminal-line" style="overflow: hidden;">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+            <div class="terminal-line">$ <span class="blinking-cursor">█</span></div>
+        </div>
+    </div>
+
+    <script>
+        let selectedProject = null;
+
+        const missionPlans = {
+            'ai-chat': {
+                title: 'AI Chat Widget Mission',
+                execution: `🚀 MISSION EXECUTION PLAN:
+
+Week 1: RECON & SETUP
+├── Day 1-2: Analyze existing Wix infrastructure, identify integration points
+├── Day 3-4: Design AI chat architecture (React + WebSocket + AI backend)
+├── Day 5: Create responsive widget prototype with TypeScript
+
+Week 2: DEPLOY & OPTIMIZE  
+├── Day 1-3: Build production-ready component with Vite bundling
+├── Day 4-5: Integration testing across all Wix site templates
+├── Weekend: Live deployment with performance monitoring
+
+EXPECTED OUTCOME:
+✅ Scalable AI chat widget deployed to 200M+ Wix sites
+✅ <100ms response time, mobile-optimized
+✅ Seamless handover to product team with documentation
+
+RISK MITIGATION: Fallback to basic chat if AI service fails
+INNOVATION: Auto-learns from site content for contextual responses`,
+                
+                impact: 'CEO deadline met with zero compromise on quality'
+            },
+            
+            'analytics': {
+                title: 'Real-time Analytics Dashboard',
+                execution: `🎯 MISSION EXECUTION PLAN:
+
+Phase 1: ARCHITECTURE (Week 1-2)
+├── Design real-time data pipeline with React + WebSocket
+├── Create modular dashboard components with TypeScript
+├── Implement responsive grid system for enterprise screens
+
+Phase 2: VISUALIZATION (Week 3-4)
+├── Build interactive charts with D3.js integration
+├── Add real-time filtering and drill-down capabilities  
+├── Optimize for 10,000+ concurrent enterprise users
+
+Phase 3: DELIVERY (Week 5-6)
+├── Performance testing with large datasets
+├── Cross-browser compatibility testing
+├── Deploy with feature flags for gradual rollout
+
+INNOVATION POINTS:
+• AI-powered anomaly detection in metrics
+• Predictive analytics using machine learning
+• Custom dashboard builder for enterprise clients
+
+HANDOVER: Complete documentation + training for analytics team`,
+                
+                impact: 'Enterprise client satisfaction + new revenue stream'
+            },
+            
+            'mobile': {
+                title: 'Mobile-First Site Editor',
+                execution: `📱 MISSION EXECUTION PLAN:
+
+Research Phase (Week 1):
+├── User journey analysis on mobile editing pain points
+├── Competitive analysis of mobile editors
+├── Technical feasibility study for touch interactions
+
+Development Sprint (Week 2-4):
+├── React Native-inspired touch gesture system
+├── Component library optimized for mobile screens
+├── Drag-and-drop with haptic feedback
+
+Revolutionary Features:
+├── Voice-to-design AI integration
+├── One-thumb navigation system
+├── Instant preview with device rotation
+
+Testing & Launch (Week 5-6):
+├── Beta testing with power users
+├── Performance optimization for older devices
+├── App store quality mobile experience
+
+GAME CHANGER: First truly mobile-native website editor
+USER IMPACT: 10x faster mobile site creation`,
+                
+                impact: 'Market disruption + mobile-first competitive advantage'
+            },
+            
+            'performance': {
+                title: 'Platform Performance Optimization',
+                execution: `⚡ MISSION EXECUTION PLAN:
+
+Analysis Phase (Week 1):
+├── Performance audit across all Wix products
+├── Identify critical path bottlenecks
+├── Benchmark against competitors
+
+Optimization Sprint (Week 2-4):
+├── Implement code splitting with Webpack optimization
+├── Add lazy loading for all non-critical components
+├── Optimize bundle sizes with tree shaking
+
+Advanced Techniques (Week 5-6):
+├── Service worker caching strategy
+├── CDN optimization for global performance
+├── Critical CSS inlining automation
+
+MEASURABLE GOALS:
+├── 50% reduction in initial load time
+├── 30% improvement in Lighthouse scores
+├── 25% decrease in bounce rate
+
+LONG-TERM IMPACT: Better SEO, user retention, conversion rates
+BONUS: Performance monitoring dashboard for ongoing optimization`,
+                
+                impact: 'Platform-wide speed boost + improved user experience'
+            }
+        };
+
+        function selectProject(element, projectType) {
+            // Remove previous selection
+            document.querySelectorAll('.project-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Select current
+            element.classList.add('selected');
+            selectedProject = projectType;
+            
+            const btn = document.getElementById('executeBtn');
+            btn.textContent = `EXECUTE: ${missionPlans[projectType].title.toUpperCase()}`;
+            btn.disabled = false;
+        }
+
+        function executeMission() {
+            if (!selectedProject) return;
+            
+            const output = document.getElementById('output');
+            const plan = missionPlans[selectedProject];
+            
+            output.style.display = 'block';
+            output.innerHTML = '<div style="color: #00ccff;">Executing mission...</div>';
+            
+            // Create progress bar
+            const progressHTML = `
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                output.innerHTML = progressHTML;
+                const progressFill = document.getElementById('progressFill');
+                progressFill.style.width = '100%';
+                
+                setTimeout(() => {
+                    output.innerHTML = `
+                        <div style="color: #00ff88; font-weight: bold; margin-bottom: 1rem;">
+                            ✅ MISSION BRIEFING COMPLETE
+                        </div>
+                        <pre style="white-space: pre-wrap; line-height: 1.6;">${plan.execution}</pre>
+                        <div style="color: #00ccff; font-weight: bold; margin-top: 1rem; padding: 1rem; background: rgba(0,204,255,0.1); border-radius: 8px;">
+                            💥 STRATEGIC IMPACT: ${plan.impact}
+                        </div>
+                    `;
+                }, 2000);
+            }, 500);
+        }
+
+        // Create floating particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Initialize
+        createParticles();
+    </script>
+</body>
+</html>
